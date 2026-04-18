@@ -1,43 +1,38 @@
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-require("dotenv").config();
-require("./db_connect");
+const express = require("express")
+const cors = require("cors")
+const path = require('path')
+require("dotenv").config()
 
-const app = express();
-const Router = require("./routes/index");
+require("./db_connect")
 
-const whitelist = [
-  'http://localhost:4000',
-  'http://localhost:3000',
-  'http://localhost:8000',
-  'http://localhost:5000',
-  'https://my-portfolio-uahq.onrender.com',
-  'https://portfolio-fawn-pi-94.vercel.app'
-];
+const Router = require("./routes/index")
+const app = express()
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || whitelist.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS Error: Not authorized'));
+var whitelist = ['http://localhost:3000', 'http://localhost:8000','https://my-portfolio-uahq.onrender.com', 'http://localhost:4000'] 
+var corsOptions = {
+    origin: function (origin, callback) {
+        // console.log("Origin",origin)
+        if (whitelist.includes(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('CORS Error, You Are not authenciated to access this api'))
+        }
     }
-  }
-};
+}
+app.use(cors(corsOptions))
 
-app.use(cors(corsOptions));
-app.use(express.json());
-app.use("/public", express.static("public"));
-app.use("/api", Router);
+
+
+app.use(express.json())                     //used to parse incomming json data
+app.use("/public", express.static("public"))//used to server public files like uploaded images
+app.use("/api",Router)
 
 // Serve React frontend
 app.use("", express.static(path.join(__dirname, "client/build")));
-app.get("*", (req, res) => {                                          // ✅ FIXED: was "/*"
-  res.sendFile(path.join(__dirname, "client/build", "index.html"));
+app.get("/*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client/build", "index.html"));
 });
 
-const port = process.env.PORT || 8000;
-app.listen(port, () => {
-  console.log(`🚀 Server running at http://localhost:${port}`);
-});
+
+let port = process.env.PORT || 8000
+app.listen(port, console.log(`Server is Running at http://localhost:8000`))

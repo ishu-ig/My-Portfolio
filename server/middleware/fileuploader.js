@@ -17,5 +17,6 @@ module.exports = {
     portfolioUploader: createUploader("portfolio"),
     certificateUploader: createUploader("certificate"),
     testimonialUploader: createUploader("testimonial"),
-    userUploader: createUploader("user")
+    userUploader: createUploader("user"),
+    blogUploader: createUploader("blog")
 }

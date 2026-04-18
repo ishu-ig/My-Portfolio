@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Autoplay } from "swiper/modules";
+import { Pagination, Autoplay, EffectFade } from "swiper/modules";
 import { useDispatch, useSelector } from "react-redux";
 import { createTestimonial, getTestimonial } from "../Redux/ActionCreartors/TestimonialActionCreators";
 import formValidator from '../FormValidators/formValidator';
 import imageValidator from '../FormValidators/imageValidator';
+
 import "swiper/css";
 import "swiper/css/pagination";
+import "swiper/css/effect-fade";
 import 'aos/dist/aos.css';
 import AOS from 'aos';
 
@@ -25,7 +27,7 @@ export default function Testimonial() {
 
   useEffect(() => {
     dispatch(getTestimonial());
-    AOS.init({ duration: 1000, once: false }); // Animate on scroll up & down
+    AOS.init({ duration: 1000, once: false });
     AOS.refresh();
   }, [dispatch]);
 
@@ -58,43 +60,47 @@ export default function Testimonial() {
   return (
     <section id="testimonials" className="testimonials-section py-5" style={{ backgroundColor: "var(--bg-color)", color: "var(--text-color)", overflowX: "hidden" }}>
       <div className="container text-center">
-        <h2 className="section-title" style={{ color: "var(--text-color)" }} data-aos="fade-down">
+        <h2 className="section-title" style={{color:"var(--text-color)"}} data-aos="fade-down">
           Testimonials
           <button className="btn btn-primary mb-4 float-end" onClick={() => setShowModal(true)}>
             <i className='fa fa-plus fs-5 text-light'></i>
           </button>
         </h2>
-        <div className="title-shape" data-aos="fade-up" data-aos-delay={100}>
-          <svg viewBox="0 0 200 20" xmlns="http://www.w3.org/2000/svg">
-            <path d="M 0,10 C 40,0 60,20 100,10 C 140,0 160,20 200,10" fill="none" stroke="currentColor" strokeWidth="2"></path>
-          </svg>
-        </div>
-        <p className="section-description mb-3" style={{ color: "var(--text-color)" }} data-aos="fade-up" data-aos-delay={200}>
-          Hear what our satisfied clients have to say about their experiences with us.
-        </p>
 
-        <div className="testimonial-slider" data-aos="fade-up" data-aos-delay={300}>
+        <div className="title-shape" data-aos="fade-up">
+          <svg viewBox="0 0 200 20"><path d="M 0,10 C 40,0 60,20 100,10 C 140,0 160,20 200,10" fill="none" stroke="currentColor" strokeWidth="2"/></svg>
+        </div>
+
+        <p className="section-description mb-3" style={{color:"var(--text-color)"}} data-aos="fade-up">What our clients say</p>
+
+        <div className="testimonial-slider" data-aos="fade-up">
           <Swiper
-            modules={[Autoplay, Pagination]}
+            key={testimonials.length}            // 👉 Forces re-render when data loads
+            modules={[Autoplay, Pagination, EffectFade]}
+            effect="fade"
+            fadeEffect={{ crossFade: true }}
             slidesPerView={1}
             loop={true}
-            speed={800}
+            autoHeight={true}                   // 👉 FIX transition/height jump bug
+            speed={700}
             autoplay={{ delay: 4000 }}
             pagination={{ clickable: true }}
             className="swiper-container"
           >
             {testimonials.filter(x => x.active).map((testimonial, index) => (
-              <SwiperSlide key={testimonial._id} data-aos="zoom-in" data-aos-delay={index * 100}>
+              <SwiperSlide key={testimonial._id}>
                 <div className="testimonial-card">
-                  <p className="testimonial-message">"{testimonial.message}"</p>
+                  <p className="testimonial-message text-center">"{testimonial.message}"</p>
+
                   <div className="profile d-flex align-items-center justify-content-center">
                     <img
                       src={`${process.env.REACT_APP_BACKEND_SERVER}/${testimonial.pic}`}
-                      className="profile-img rounded-circle"
+                      className="profile-img"
                       alt={testimonial.name}
                     />
-                    <div className="profile-info ms-3 text-start">
-                      <h4 className="testimonial-name" style={{ color: "var(--text-color)" }}>{testimonial.name}</h4>
+
+                    <div className="profile-info ms-3 text-start text-center">
+                      <h4 className="testimonial-name">{testimonial.name}</h4>
                       <span className="testimonial-role">Verified Client</span>
                     </div>
                   </div>
@@ -114,28 +120,36 @@ export default function Testimonial() {
                 <h5 className="modal-title">Add Testimonial</h5>
                 <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
               </div>
+
               <form onSubmit={postSubmit}>
                 <div className="modal-body">
                   <div className="mb-3">
-                    <input type="text" name="name" onChange={getInputData} value={data.name} placeholder="Your Name"
+                    <input type="text" name="name" onChange={getInputData} value={data.name}
+                      placeholder="Your Name"
                       className={`form-control border-3 ${show && error.name ? 'border-danger' : 'border-primary'}`} />
-                    {show && error.name && <p className='text-danger text-capitalize'>{error.name}</p>}
+                    {show && error.name && <p className='text-danger'>{error.name}</p>}
                   </div>
+
                   <div className="mb-3">
-                    <textarea name="message" onChange={getInputData} value={data.message} placeholder="Message..." rows={5}
+                    <textarea name="message" onChange={getInputData} value={data.message}
+                      placeholder="Message..." rows={5}
                       className={`form-control border-3 ${show && error.message ? 'border-danger' : 'border-primary'}`} />
-                    {show && error.message && <p className='text-danger text-capitalize'>{error.message}</p>}
+                    {show && error.message && <p className='text-danger'>{error.message}</p>}
                   </div>
+
                   <div className="mb-3">
-                    <input type="file" name="pic" onChange={getInputData} className={`form-control border-3 ${show && error.pic ? 'border-danger' : 'border-primary'}`} />
-                    {show && error.pic && <p className='text-danger text-capitalize'>{error.pic}</p>}
+                    <input type="file" name="pic" onChange={getInputData}
+                      className={`form-control border-3 ${show && error.pic ? 'border-danger' : 'border-primary'}`} />
+                    {show && error.pic && <p className='text-danger'>{error.pic}</p>}
                   </div>
                 </div>
+
                 <div className="modal-footer">
                   <button type="submit" className="btn btn-success">Submit</button>
                   <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
                 </div>
               </form>
+
             </div>
           </div>
         </div>

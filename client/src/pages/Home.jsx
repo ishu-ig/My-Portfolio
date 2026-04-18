@@ -9,6 +9,8 @@ import Testimonial from '../Components/Testimonials'
 import ContactUs from '../Components/ContactUs'
 import Achievement from '../Components/Achievement'
 import Certificates from '../Components/Certificate'
+import Blog from '../Components/Blog'
+
 
 export default function Home() {
   return (
@@ -21,7 +23,9 @@ export default function Home() {
     <Portfolio />
     <Testimonial />
     <Service />
+    
     <Achievement />
+    <Blog />
     <ContactUs />
     </>
   )

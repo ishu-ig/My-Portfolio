@@ -1,133 +1,220 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
 import { getPortfolio } from "../Redux/ActionCreartors/PortfolioActionCreators";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 
 export default function ProjectDetails() {
-    let { _id } = useParams();
-    let [data, setData] = useState(null);
-    let [relatedData, setRelatedData] = useState([]);
-    let PortfolioStateData = useSelector((state) => state.PortfolioStateData);
-    let dispatch = useDispatch();
+  const { _id } = useParams();
 
-    useEffect(() => {
-        dispatch(getPortfolio());
-    }, [dispatch]);
+  const [data, setData] = useState(null);
+  const [relatedData, setRelatedData] = useState([]);
+  const PortfolioStateData = useSelector((state) => state.PortfolioStateData);
+  const dispatch = useDispatch();
 
-    useEffect(() => {
-        if (PortfolioStateData.length) {
-            let selectedProject = PortfolioStateData.find((x) => x._id === _id);
-            setData(selectedProject || null);
-            let otherProjects = PortfolioStateData.filter((x) => x._id !== _id);
-            setRelatedData(otherProjects);
-        }
-    }, [PortfolioStateData, _id]);
+  useEffect(() => {
+    dispatch(getPortfolio());
+  }, [dispatch]);
 
-    if (!data) return <div className="text-center py-5">Loading project details...</div>;
+  useEffect(() => {
+    if (PortfolioStateData.length) {
+      const selectedProject = PortfolioStateData.find((x) => x._id === _id);
+      setData(selectedProject || null);
 
-    return (
-        <>
-            {/* Project Details */}
-            <section className="project-details py-5">
-                <div className="container text-center">
-                    <h2 className="section-title" style={{ color: "var(--text-color)" }}>{data.name}</h2>
-                    <div className="title-shape">
-                        <svg viewBox="0 0 200 20" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M 0,10 C 40,0 60,20 100,10 C 140,0 160,20 200,10" fill="none" stroke="currentColor" strokeWidth="2" />
-                        </svg>
+      const otherProjects = PortfolioStateData.filter((x) => x._id !== _id);
+      setRelatedData(otherProjects);
+    }
+  }, [PortfolioStateData, _id]);
+
+  if (!data)
+    return <div className="text-center py-5">Loading project details...</div>;
+
+  return (
+    <>
+      {/* PROJECT DETAILS */}
+      <section className="project-details-enhanced py-5">
+        <div className="container text-center">
+          <h2
+            className="section-title mb-3  title-font"
+            style={{ color: "var(--text-color)" }}
+          >
+            {data.name}
+          </h2>
+
+          <div className="title-underline mx-auto mb-4"></div>
+
+          <div className="project-image-wrapper mb-4">
+            <img
+              src={`${process.env.REACT_APP_BACKEND_SERVER}/${data.pic}`}
+              alt={data.name}
+              className="project-image"
+            />
+          </div>
+
+          <p className="short-description lead px-3 text-center mobile-font ">
+            {data.shortDescription}
+          </p>
+
+          <hr className="custom-divider my-4" />
+
+          <div
+            className="long-description px-3 text-justify long-description-text"
+            dangerouslySetInnerHTML={{ __html: data.longDescription }}
+          ></div>
+
+          <div className="project-meta mt-4 px-3 glass-card ">
+            <p>
+              <strong className="mobile-font">Category:</strong> {data.category}
+            </p>
+            <p>
+              <strong className="mobile-font">Tech Stack:</strong> {data.tech}
+            </p>
+          </div>
+
+          <div className="button-row mt-4">
+            {data.githubRepo && (
+              <a
+                href={data.githubRepo}
+                target="_blank"
+                className="btn modern-btn-small me-3"
+              >
+                GitHub Repo
+              </a>
+            )}
+            <Link to="/" className="btn modern-btn-small px-5">
+              Home
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* RELATED PROJECTS */}
+      {/* RELATED PROJECTS */}
+      {/* RELATED PROJECTS */}
+      <section className="related-projects py-5">
+        <div className="container">
+          <div className="text-center mb-4">
+            <h2
+              className="section-title"
+              style={{ color: "var(--text-color)" }}
+            >
+              Other Projects
+            </h2>
+            <div className="title-underline mx-auto"></div>
+          </div>
+
+          {/* Swiper Import */}
+          {/* IMPORTANT: Add at the top of the file */}
+          {/*
+            import { Swiper, SwiperSlide } from "swiper/react";
+            import { Pagination, Autoplay } from "swiper/modules";
+            import "swiper/css";
+            import "swiper/css/pagination";
+        */}
+
+          <Swiper
+            spaceBetween={20}
+            slidesPerView={1}
+            autoplay={{ delay: 2500 }}
+            breakpoints={{
+              576: { slidesPerView: 2 },
+              992: { slidesPerView: 3 },
+            }}
+            modules={[Pagination, Autoplay]}
+            className="mySwiper"
+          >
+            {relatedData.length === 0 ? (
+              <p className="text-center">No other projects available.</p>
+            ) : (
+              relatedData.map((item, index) => (
+                <SwiperSlide key={index}>
+                  <div className="portfolio-card-upgraded h-100">
+                    <img
+                      src={`${process.env.REACT_APP_BACKEND_SERVER}/${item.pic}`}
+                      alt={item.name}
+                      height={200}
+                      className="portfolio-card-img"
+                    />
+
+                    <div className="portfolio-card-body text-center">
+                      <h5 className="card-title fw-bold">{item.name}</h5>
+                      <p style={{ color: "var(--text-color)" }}>
+                        {item.category}
+                      </p>
+
+                      <Link
+                        to={`/projectDetail/${item._id}`}
+                        className="btn modern-btn-small"
+                      >
+                        View Details →
+                      </Link>
                     </div>
+                  </div>
+                </SwiperSlide>
+              ))
+            )}
+          </Swiper>
+        </div>
+        <style>
+          {`
+/* ===== MAIN PROJECT IMAGE ===== */
+.project-image-wrapper {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
 
-                    <div className="text-center">
-                        <img
-                            src={`${process.env.REACT_APP_BACKEND_SERVER}/${data.pic}`}
-                            alt={data.name}
-                            className="img-fluid rounded shadow-lg my-4"
-                            style={{ maxWidth: "100%", borderRadius: "12px" }}
-                        />
-                    </div>
+.project-image {
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
 
-                    <p className="short-description fs-5 px-3">{data.shortDescription}</p>
-                    <hr className="my-4" />
+/* ===== SWIPER / CARD IMAGES ===== */
+.portfolio-card-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+}
 
-                    <div
-                        className="long-description text-start mx-auto px-3"
-                        dangerouslySetInnerHTML={{ __html: data.longDescription }}
-                        style={{ maxWidth: "900px", wordWrap: "break-word" }}
-                    ></div>
+/* ===== CARD STYLING ===== */
+.portfolio-card-upgraded {
+  overflow: hidden;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
 
-                    <div className="project-meta mt-4 px-3">
-                        <p><strong className="fs-5">Category:</strong> {data.category}</p>
-                        <p><strong className="fs-5">Tech Stack:</strong> {data.tech}</p>
-                    </div>
+.portfolio-card-upgraded:hover {
+  transform: translateY(-5px);
+}
 
-                    <div className="btn-group gap-3">
-                        {data.githubRepo && (
-                        <div className="buttons mt-4">
-                            <a
-                                href={data.githubRepo}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn btn-primary"
-                                style={{ padding: "10px 20px", borderRadius: "8px", fontWeight: "600" }}
-                            >
-                                View on GitHub
-                            </a>
-                        </div>
-                    )}
-                    <div className="buttons mt-4">
-                            <Link
-                                to = {`/`}
-                                className="btn btn-primary px-5"
-                                style={{ padding: "10px 20px", borderRadius: "8px", fontWeight: "600" }}
-                            >
-                                Home
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </section>
+/* ===== MOBILE RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .project-image {
+    max-height: 250px;
+  }
 
-            {/* Related Projects */}
-            <section className="portfolio-section py-5">
-                <div className="container text-center">
-                    <h2 className="section-title">Other Projects</h2>
-                    <div className="title-shape">
-                        <svg viewBox="0 0 200 20" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M 0,10 C 40,0 60,20 100,10 C 140,0 160,20 200,10" fill="none" stroke="currentColor" strokeWidth="2" />
-                        </svg>
-                    </div>
-                    <p className="section-subtitle">Showcasing my best works in web development and design.</p>
-                </div>
+  .portfolio-card-img {
+    height: 180px;
+  }
+}
 
-                <div className="container">
-                    <div className="row g-4">
-                        {relatedData.length === 0 ? (
-                            <p className="text-center">No other projects available.</p>
-                        ) : (
-                            relatedData.map((item, index) => (
-                                <div key={index} className="col-lg-4 col-md-6 col-sm-12">
-                                    <div className="card portfolio-card shadow-sm h-100 border-0">
-                                        <img
-                                            src={`${process.env.REACT_APP_BACKEND_SERVER}/${item.pic}`}
-                                            className="card-img-top img-fluid"
-                                            alt={item.name}
-                                            loading="lazy"
-                                            style={{ borderRadius: "12px 12px 0 0", height: "200px", objectFit: "cover" }}
-                                        />
-                                        <div className="card-body text-center">
-                                            <h5 className="card-title">{item.name}</h5>
-                                            <p className="category">{item.category}</p>
-                                            <Link to={`/projectDetail/${item._id}`} className="btn btn-outline-primary mt-2">
-                                                View Details
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))
-                        )}
-                    </div>
-                </div>
-            </section>
-        </>
-    );
+@media (max-width: 480px) {
+  .portfolio-card-img {
+    height: 150px;
+  }
+}
+`}
+        </style>
+      </section>
+    </>
+  );
 }

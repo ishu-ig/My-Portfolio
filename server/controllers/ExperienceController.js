@@ -1,10 +1,11 @@
-const Experience = require("../models/Experience")
+const Experience = require("../models/Experience");
+const syncResume = require("../resumeSync/resumeSync");
 
 async function createRecord(req, res) {
     try {
         let data = new Experience(req.body)
         await data.save()
-
+        await syncResume("experience", data._id);
         res.send({
             result: "Done",
             data: data,
@@ -61,6 +62,7 @@ async function updateRecord(req, res) {
             data.description = req.body.description ?? data.description
             data.active = req.body.active ?? data.active
             await data.save()
+            await syncResume("experience", data._id);
 
             res.send({
                 result: "Done",

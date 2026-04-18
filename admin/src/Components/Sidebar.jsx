@@ -1,27 +1,53 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function AdminSidebar({ isExpanded }) {
-    return (
-        <div id="sidebar" className={isExpanded ? "expanded" : ""}>
-            <div className="sidebar-header">
-                <img src="https://i.pravatar.cc/100" alt="Admin" className="admin-avatar" />
-                <span className="admin-name">John Doe</span>
-            </div>
+  const location = useLocation();
 
-            <ul className="nav flex-column mt-3  sidebar-nav">
-                <li><Link to="/dashboard" className="nav-link"><i className="fa fa-home"></i> <span>Dashboard</span></Link></li>
-                <li><Link to="/skill" className="nav-link"><i className="fa fa-list"></i> <span>Skill</span></Link></li>
-                <li><Link to="/education" className="nav-link"><i className="fa fa-list"></i> <span>Education</span></Link></li>
-                <li><Link to="/experience" className="nav-link"><i className="fa fa-list"></i> <span>Experiences</span></Link></li>
-                <li><Link to="/certificate" className="nav-link"><i className="fa fa-list"></i> <span>Certificate</span></Link></li>
-                <li><Link to="/portfolio" className="nav-link"><i className="fa fa-star"></i> <span>Portfolio</span></Link></li>
-                <li><Link to="/service" className="nav-link"><i className="fa fa-envelope"></i> <span>Service</span></Link></li>
-                <li><Link to="/testimonial" className="nav-link"><i className="fa fa-shopping-cart"></i> <span>Testimonial</span></Link></li>
-                <li><Link to="/user" className="nav-link"><i className="fa fa-users"></i> <span>User</span></Link></li>
-                <li><Link to="/contactus" className="nav-link"><i className="fa fa-phone"></i> <span>ContactUs</span></Link></li>
-                <li><Link to="/settings" className="nav-link"><i className="fa fa-cog"></i> <span>Settings</span></Link></li>
-            </ul>
-        </div>
-    );
+  const menuItems = [
+    { path: "/dashboard", icon: "fa-home", label: "Dashboard" },
+    { path: "/skill", icon: "fa-lightbulb", label: "Skills" },
+    { path: "/education", icon: "fa-graduation-cap", label: "Education" },
+    { path: "/experience", icon: "fa-briefcase", label: "Experience" },
+    { path: "/certificate", icon: "fa-certificate", label: "Certificates" },
+    { path: "/portfolio", icon: "fa-image", label: "Portfolio" },
+    { path: "/service", icon: "fa-concierge-bell", label: "Services" },
+    { path: "/testimonial", icon: "fa-comments", label: "Testimonials" },
+    { path: "/user", icon: "fa-users", label: "Users" },
+    { path: "/contactus", icon: "fa-phone", label: "Contact Us" },
+    { path: "/blog", icon: "fa-phone", label: "Blog" },
+    { path: "/newsletter", icon: "fa-phone", label: "Newsletter" },
+    { path: "/settings", icon: "fa-cog", label: "Settings" },
+  ];
+
+  return (
+    <aside className={`admin-sidebar ${isExpanded ? "expanded" : "collapsed"}`}>
+      {/* Header */}
+      <div className="sidebar-header d-flex align-items-center justify-content-center flex-column py-4">
+        <img
+          src="https://i.pravatar.cc/100"
+          alt="Admin"
+          className="admin-avatar mb-2"
+        />
+        {isExpanded && <span className="admin-name">John Doe</span>}
+      </div>
+
+      {/* Menu */}
+      <ul className="sidebar-menu list-unstyled">
+        {menuItems.map((item) => (
+          <li key={item.path}>
+            <Link
+              to={item.path}
+              className={`nav-link d-flex align-items-center ${
+                location.pathname === item.path ? "active" : ""
+              }`}
+            >
+              <i className={`fa ${item.icon} me-2`}></i>
+              {isExpanded && <span>{item.label}</span>}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  );
 }

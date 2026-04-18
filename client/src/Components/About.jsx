@@ -68,7 +68,7 @@ export default function About() {
                             </p>
 
                             {/* Personal Info Cards */}
-                            <div className="personal-info">
+                            <div className="personal-info" style={{ backgroundColor: "var(--bg-color)", color: "var(--text-color)" }}>
                                 {personalInfo.map((item, index) => (
                                     <div key={index} className="info-card">
                                         <p><strong>{item.label}:</strong></p>

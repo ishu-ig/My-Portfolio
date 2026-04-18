@@ -1,10 +1,12 @@
 const Skill = require("../models/Skill")
-const fs = require("fs")
+const fs = require("fs");
+const syncResume = require("../resumeSync/resumeSync");
 
 async function createRecord(req, res) {
     try {
         let data = new Skill(req.body)
         await data.save()
+        await syncResume("skills", data._id);
         res.send({
             result: "Done",
             data: data
@@ -59,6 +61,7 @@ async function updateRecord(req, res) {
             data.level = req.body.level ?? data.level
             data.active = req.body.active ?? data.active
             await data.save()
+            await syncResume("skills", data._id);
             
             res.send({
                 result: "Done",

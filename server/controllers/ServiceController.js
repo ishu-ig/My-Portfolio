@@ -1,10 +1,12 @@
 const Service = require("../models/Service")
-const fs = require("fs")
+const fs = require("fs");
+const syncResume = require("../resumeSync/resumeSync");
 
 async function createRecord(req, res) {
     try {
         let data = new Service(req.body)
         await data.save()
+        await syncResume("services", data._id);
         res.send({
             result: "Done",
             data: data
@@ -93,6 +95,8 @@ async function updateRecord(req, res) {
             data.active = req.body.active ?? data.active;
             
             await data.save();
+            await syncResume("services", data._id);
+            
             res.send({ result: "Done", data: data });
         } else {
             res.status(404).send({ result: "Fail", reason: "Record Not Found" });
@@ -135,6 +139,7 @@ async function deleteRecord(req, res) {
         })
     }
 }
+
 
 module.exports = {
     createRecord: createRecord,

@@ -7,6 +7,10 @@ import CertificateReducer from "./CertificateReducer"
 import PortfolioReducer from "./PortfolioReducer"
 import ContactUsReducer from "./ContactUsReducer"
 import TestimonialReducer from "./TestimonialReducer"
+import BlogReducer from "./BlogReducer"
+import ResumeReducer from "./ResumeReducer"
+import NewsletterReducer from "./NewsletterReducer"
+import CommentReducer from "./CommentReducer"
 
 
 export default combineReducers({
@@ -18,4 +22,8 @@ export default combineReducers({
     CertificateStateData: CertificateReducer,
     ContactUsStateData: ContactUsReducer,
     PortfolioStateData: PortfolioReducer,
+    BlogStateData: BlogReducer,
+    ResumeStateData : ResumeReducer,
+    NewsletterStateData : NewsletterReducer,
+    CommentStateData : CommentReducer
 })

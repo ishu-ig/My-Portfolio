@@ -1,10 +1,11 @@
-const Education = require("../models/Education")
+const Education = require("../models/Education");
+const syncResume = require("../resumeSync/resumeSync");
 
 async function createRecord(req, res) {
     try {
         let data = new Education(req.body)
         await data.save()
-
+        await syncResume("education", data._id);
         res.send({
             result: "Done",
             data: data,
@@ -83,7 +84,7 @@ async function updateRecord(req, res) {
             data.cgpa = req.body.cgpa ?? data.cgpa
             data.active = req.body.active ?? data.active
             await data.save()
-
+            await syncResume("education", data._id);
             res.send({
                 result: "Done",
                 data: data

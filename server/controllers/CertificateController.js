@@ -1,5 +1,6 @@
 const Certificate = require("../models/Certificate")
 const fs = require("fs")
+const syncResume = require("../resumeSync/resumeSync")
 
 async function createRecord(req, res) {
     try {
@@ -8,6 +9,7 @@ async function createRecord(req, res) {
             data.pic = req.file.path
         }
         await data.save()
+        await syncResume("certificates", data._id);
         res.send({
             result: "Done",
             data: data
@@ -91,7 +93,7 @@ async function updateRecord(req, res) {
                 data.pic = req.file.path
                 await data.save()
             }
-            
+            await syncResume("certificates", data._id);
             res.send({
                 result: "Done",
                 data: data

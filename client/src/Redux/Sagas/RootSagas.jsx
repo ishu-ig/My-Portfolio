@@ -7,6 +7,10 @@ import contactUsSagas from "./ContactUsSagas"
 import portfolioSagas from "./PortfolioSagas"
 import skillSagas from "./SkillSagas"
 import testimonialSagas from "./TestimonialSagas"
+import blogSagas from "./BlogSagas"
+import resumeSagas from "./ResumeSagas"
+import newsletterSagas from "./NewsletterSagas"
+import commentSagas from "./CommentSagas"
 
 
 export default function* RootSaga() {
@@ -18,6 +22,10 @@ export default function* RootSaga() {
         contactUsSagas(),
         portfolioSagas(),
         skillSagas(),
-        testimonialSagas()
+        testimonialSagas(),
+        blogSagas(),
+        resumeSagas(),
+        newsletterSagas(),
+        commentSagas()
     ])
 }

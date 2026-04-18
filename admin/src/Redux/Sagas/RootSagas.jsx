@@ -7,6 +7,8 @@ import contactUsSagas from "./ContactUsSagas"
 import portfolioSagas from "./PortfolioSagas"
 import skillSagas from "./SkillSagas"
 import testimonialSagas from "./TestimonialSagas"
+import blogSagas from "./BlogSagas"
+import newsletterSagas from "./NewsletterSagas"
 
 
 export default function* RootSaga() {
@@ -18,6 +20,8 @@ export default function* RootSaga() {
         contactUsSagas(),
         portfolioSagas(),
         skillSagas(),
-        testimonialSagas()
+        testimonialSagas(),
+        blogSagas(),
+        newsletterSagas()
     ])
 }

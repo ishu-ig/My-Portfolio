@@ -44,13 +44,13 @@ export default function Resume() {
                             {ExperienceStateData.filter(x=>x.active).map((item, index) => (
                                 <div key={item._id} className="timeline-item" data-aos="fade-up" data-aos-delay={item.delay}>
                                     <div className="timeline-left">
-                                        <h4 className="company">{item.companyName}</h4>
-                                        <span className="period" style={{ color: "var(--text-color)" }}>{item.startDate}-{item.endDate}</span>
+                                        <h4 className="company ">{item.companyName}</h4>
+                                        <span className="period mobile-font" style={{ color: "var(--text-color)" }}>{item.startDate}-{item.endDate}</span>
                                     </div>
                                     <div className="timeline-dot"></div>
                                     <div className="timeline-right">
                                         <h3 className="position" style={{ color: "var(--text-color)" }}>{item.jobTitle}</h3>
-                                        <p className="description" style={{ color: "var(--text-color)" }}>{item.description}</p>
+                                        <p className="description mobile-font" style={{ color: "var(--text-color)" }}>{item.description}</p>
                                     </div>
                                 </div>
                             ))}

@@ -33,9 +33,9 @@ app.use("/public", express.static("public"))
 app.use("/api", Router)
 
 // Serve React frontend
-app.use("", express.static(path.join(__dirname, "client/build")))
+app.use("", express.static(path.join(__dirname, "admin/build")))
 app.get("/{*path}", (req, res) => {                  // ✅ FIXED: was "*"
-    res.sendFile(path.join(__dirname, "client/build", "index.html"))
+    res.sendFile(path.join(__dirname, "admin/build", "index.html"))
 })
 
 let port = process.env.PORT || 8000
